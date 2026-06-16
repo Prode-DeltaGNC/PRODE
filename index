@@ -59,7 +59,7 @@
 
         try {
             // RECUERDA: Pon aquí tu IP Pública o dominio configurado en el router
-            const response = await fetch('http://TU_IP_PUBLICA:3002/api/guardar-prode', {
+            const response = await fetch('http://192.168.1.39:3002/api/guardar-prode', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ patente, golesArg, golesRiv })
