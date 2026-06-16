@@ -1,1 +1,22 @@
+<div style="margin-bottom: 20px;">
+    <input type="text" id="patente" placeholder="Patente (ej: AA123BB)" 
+           style="width: 80%; padding: 10px; text-transform: uppercase;" required>
+</div>
 
+<script>
+    // En la función enviarProde, agrega esto al objeto payload:
+    const patente = document.getElementById('patente').value.toUpperCase();
+    
+    if (patente.length < 6) {
+        msg.className = 'error';
+        msg.innerText = "⚠️ Por favor, ingresa una patente válida.";
+        return;
+    }
+
+    const payload = {
+        patente: patente, // <--- Ahora guardamos la patente
+        golesArg: parseInt(golesArg),
+        golesRiv: parseInt(golesRiv)
+    };
+    // ... resto del código fetch ...
+</script>
