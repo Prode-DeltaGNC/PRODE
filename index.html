@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>PRODE DELTA GNC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; background: radial-gradient(circle at top, #4fc3ff, #0b3d91 35%, #0a6b38 75%, #06351b); min-height: 100vh; }
+        .card { animation: up .8s ease }
+        @keyframes up { from { opacity: 0; transform: translateY(40px) } to { opacity: 1; transform: none } }
+        .glow { text-shadow: 0 0 10px #fff, 0 0 25px #ffd700 }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="flex flex-col items-center p-4">
+
+<div id="pantalla-principal" class="text-center card mt-4 w-full max-w-xl">
+    <h1 class="text-6xl font-black italic text-yellow-300 glow">DELTA GNC</h1>
+    <h2 class="text-3xl font-black text-white mt-2">PRODE ARGENTINA 2026</h2>
+    
+    <div class="flex justify-center items-center gap-8 my-8">
+        <div class="text-center"><div class="text-[70px]">🇦🇷</div><div class="text-white font-black text-xl">ARGENTINA</div></div>
+        <div class="text-white text-4xl font-black">VS</div>
+        <div class="text-center"><div class="text-[70px]">🇦🇹</div><div class="text-white font-black text-xl">AUSTRIA</div></div>
+    </div>
+
+    <div class="space-y-3 mb-8">
+        <div id="fechaPartido" class="inline-block bg-black/40 text-white rounded-full px-6 py-2 text-lg font-black">
+    📅 LUNES 22/06 | ⏰ 14:00 HS
+</div>
+        <div class="text-yellow-300 font-black text-lg italic uppercase">PARTICIPA POR UNA CARGA GRATIS DE GNC</div>
+    </div>
+
+    <div class="bg-white rounded-3xl p-6 border-4 border-sky-400 shadow-2xl mb-5">
+        <div class="text-center text-lg font-black text-sky-900 mb-1">PATENTE</div>
+        <input id="patente" maxlength="7" class="w-full text-center uppercase text-5xl font-black outline-none" placeholder="ABC123">
+    </div>
+
+    <div class="grid grid-cols-2 gap-5 mb-8">
+        <div class="bg-sky-100 rounded-3xl p-4 border-4 border-sky-400">
+            <div class="text-center font-black text-sky-900">ARGENTINA</div>
+            <input id="arg" type="number" class="w-full text-center text-6xl font-black bg-transparent outline-none">
+        </div>
+        <div class="bg-yellow-300 rounded-3xl p-4 border-4 border-yellow-500">
+            <div class="text-center font-black text-yellow-900">AUSTRIA</div>
+            <input id="rival" type="number" class="w-full text-center text-6xl font-black bg-transparent outline-none">
+        </div>
+    </div>
+
+    <button onclick="generarTodo()" class="w-full bg-green-600 active:scale-95 transition text-white text-3xl font-black rounded-3xl py-6 shadow-xl">
+        📲 ENVIAR Y GENERAR QR
+    </button>
+</div>
+
+<div id="pantalla-qr" class="hidden card text-center mt-4 w-full max-w-xl bg-white p-6 rounded-3xl">
+    <h2 class="text-2xl font-black text-sky-900 mb-4">CUPÓN DE PARTICIPACIÓN</h2>
+    <div id="qrcode" class="flex justify-center mb-4"></div>
+    <p id="texto-qr" class="text-sm font-bold text-gray-800"></p>
+    <button onclick="location.reload()" class="mt-6 w-full bg-gray-500 text-white font-black py-3 rounded-xl">NUEVO PRONOSTICO</button>
+</div>
+
+<script>
+function generarTodo(){
+    const tuNumero = "5491127098175"; 
+    const patente = document.getElementById("patente").value.trim().toUpperCase();
+    const arg = document.getElementById("arg").value;
+    const rival = document.getElementById("rival").value;
+    const fecha = new Date().toLocaleDateString();
+    
+    if(!patente || arg === "" || rival === ""){
+        alert("Por favor, completá todos los campos.");
+        return;
+    }
+    // --- INICIO DE RESTRICCIÓN DE 2 HORAS ---
+    const ahora = new Date().getTime();
+    const registros = JSON.parse(localStorage.getItem('prode_registros') || '{}');
+    
+    if (registros[patente]) {
+        const ultimaVez = registros[patente];
+        const dosHoras = 2 * 60 * 60 * 1000; // 2 horas en milisegundos
+        
+        if (ahora - ultimaVez < dosHoras) {
+            alert("⛔ Ya participaste con esta patente hace poco. Debes esperar 2 horas para volver a jugar.");
+            return; // Detiene la ejecución aquí
+        }
+    }
+    // --- FIN DE RESTRICCIÓN ---
+    
+    // 1. Preparar textos (sin acentos para que el QR no de error)
+    const datosQR = `PRODE DELTA GNC | Argentina vs Austria | Patente: ${patente} | Pronostico: ${arg}-${rival} | ${fecha}`;
+    const mensajeWp = `🇦🇷 *PRODE DELTA GNC*\n\n⚽ Partido: ARGENTINA VS AUSTRIA\n🚗 Patente: ${patente}\n📊 Pronostico: ${arg}-${rival}\n📅 Fecha: ${fecha}\n🎁 ¡Participá por una carga gratis!`;
+    
+    // 2. Mostrar Pantalla QR
+    document.getElementById("pantalla-principal").classList.add("hidden");
+    document.getElementById("pantalla-qr").classList.remove("hidden");
+    document.getElementById("texto-qr").innerText = datosQR;
+    
+    // 3. Generar QR
+    document.getElementById("qrcode").innerHTML = "";
+    new QRCode(document.getElementById("qrcode"), {
+        text: datosQR,
+        width: 200,
+        height: 200
+    });
+   // 4. Guardar registro exitoso (Aquí registramos el tiempo)
+    registros[patente] = ahora;
+    localStorage.setItem('prode_registros', JSON.stringify(registros));
+    
+    // 5. Abrir WhatsApp
+    window.open(`https://wa.me/${tuNumero}?text=${encodeURIComponent(mensajeWp)}`, "_blank");
+mostrarBotonGuardar({
+    patente: patente,
+    pronostico: `${arg}-${rival}`,
+    partido: "ARGENTINA VS AUSTRIA", // Puedes dejarlo fijo o tomarlo de otro elemento
+    fechaPartido: document.getElementById("fechaPartido").innerText.replace("📅", "").replace("⏰", "").trim()
+});
+
+}
+// ===============================
+// GUARDAR CUPÓN DELTA GNC
+// ===============================
+
+function mostrarBotonGuardar(datosQR) {
+
+    let btn = document.getElementById("btnGuardarCupon");
+
+    if (!btn) {
+
+        btn = document.createElement("button");
+        btn.id = "btnGuardarCupon";
+        btn.innerHTML = "📥 Guardar Cupón";
+
+        btn.style.display = "block";
+        btn.style.margin = "30px auto";
+        btn.style.padding = "16px 35px";
+        btn.style.fontSize = "20px";
+        btn.style.fontWeight = "bold";
+        btn.style.color = "#fff";
+        btn.style.background = "linear-gradient(90deg,#008c4a,#00b060)";
+        btn.style.border = "none";
+        btn.style.borderRadius = "40px";
+        btn.style.cursor = "pointer";
+        btn.style.boxShadow = "0 8px 20px rgba(0,0,0,.25)";
+        btn.style.transition = "all .25s ease";
+        btn.style.fontFamily = "Arial, sans-serif";
+
+        btn.onmouseover = () => {
+            btn.style.transform = "scale(1.05)";
+            btn.style.boxShadow = "0 12px 25px rgba(0,0,0,.35)";
+        };
+
+        btn.onmouseout = () => {
+            btn.style.transform = "scale(1)";
+            btn.style.boxShadow = "0 8px 20px rgba(0,0,0,.25)";
+        };
+
+        btn.onmousedown = () => {
+            btn.style.transform = "scale(0.97)";
+        };
+
+        btn.onmouseup = () => {
+            btn.style.transform = "scale(1.05)";
+        };
+
+        document.body.appendChild(btn);
+    }
+
+    btn.onclick = () => guardarCupon(datosQR);
+}
+
+function guardarCupon(datosQR){
+
+    const qr = document.querySelector("canvas");
+
+    if(!qr){
+        alert("No se encontró el código QR.");
+        return;
+    }
+
+    const canvas=document.createElement("canvas");
+    canvas.width=900;
+    canvas.height=1750;
+
+    const ctx=canvas.getContext("2d");
+
+    // Fondo
+    ctx.fillStyle="#f8f8f8";
+    ctx.fillRect(0,0,900,1500);
+
+    // Marco
+    ctx.strokeStyle="#006633";
+    ctx.lineWidth=8;
+    ctx.strokeRect(20,20,860,1460);
+
+    // Encabezado
+    ctx.fillStyle="#006633";
+    ctx.fillRect(20,20,860,140);
+
+    ctx.fillStyle="white";
+    ctx.font="bold 58px Arial";
+    ctx.textAlign="center";
+    ctx.fillText("DELTA GNC",450,95);
+
+    ctx.font="28px Arial";
+    ctx.fillText("PRODE DEL PARTIDO",450,135);
+    ctx.fillStyle="#000";
+    ctx.textAlign="center";
+    ctx.font="bold 35px Arial";
+    ctx.fillText(datosQR.partido, 450, 200); // Título del partido
+    ctx.font="28px Arial";
+    ctx.fillText(datosQR.fechaPartido, 450, 240); // Fecha y hora
+    
+    // Línea divisoria extra para separar el título del resto
+    ctx.strokeStyle="#cccccc";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(50,260);
+    ctx.lineTo(850,260);
+    ctx.stroke();
+    // -------------------------------
+
+    // Fecha
+    const fecha=new Date().toLocaleDateString("es-AR");
+
+    // Datos
+    let y=300;
+
+    ctx.fillStyle="#000";
+    ctx.textAlign="left";
+
+    ctx.font="bold 34px Arial";
+    ctx.fillText("PATENTE",70,y);
+
+    ctx.font="32px Arial";
+    ctx.fillText(datosQR.patente,320,y);
+
+    y+=70;
+
+    ctx.font="bold 34px Arial";
+    ctx.fillText("PRONÓSTICO",70,y);
+
+    ctx.font="32px Arial";
+    ctx.fillText(datosQR.pronostico,320,y);
+
+    y+=70;
+
+    ctx.font="bold 34px Arial";
+    ctx.fillText("FECHA",70,y);
+
+    ctx.font="32px Arial";
+    ctx.fillText(fecha,320,y);
+
+    y+=110;
+
+    // Línea
+    ctx.strokeStyle="#cccccc";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(50,y);
+    ctx.lineTo(850,y);
+    ctx.stroke();
+
+    y+=80;
+
+    // Premio
+    ctx.fillStyle="#006633";
+    ctx.font="bold 40px Arial";
+    ctx.textAlign="center";
+    ctx.fillText("🎁 PREMIO",450,y);
+
+    y+=60;
+
+    ctx.fillStyle="#000";
+    ctx.font="30px Arial";
+    ctx.fillText("Si acertás el resultado oficial",450,y);
+
+    y+=45;
+
+    ctx.fillText("podrás canjear tu premio",450,y);
+
+    y+=45;
+
+    ctx.fillText("presentando este cupón.",450,y);
+
+    y+=100;
+
+    // QR grande
+    ctx.drawImage(qr,210,y,480,480);
+    y+=560;
+
+    ctx.fillStyle="#006633";
+    ctx.font="bold 30px Arial";
+    ctx.textAlign="center"; // Asegúrate de que esté centrado
+    ctx.fillText("Presentá este QR en DELTA GNC",450,y);
+
+    y+=45;
+    ctx.fillStyle="#666";
+    ctx.font="24px Arial";
+    ctx.fillText("Conservalo hasta conocer el resultado del partido.",450,y);
+
+    y+=70;
+
+    // Línea punteada
+    ctx.strokeStyle="#999";
+    ctx.setLineDash([12,10]);
+
+    ctx.beginPath();
+    ctx.moveTo(50,y);
+    ctx.lineTo(850,y);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    y+=70;
+
+    ctx.fillStyle="#006633";
+    ctx.font="bold 26px Arial";
+    ctx.fillText("¡Gracias por participar!",450,y);
+
+    // Descargar
+    const link=document.createElement("a");
+    link.download="Cupon_DELTA_GNC.png";
+    link.href=canvas.toDataURL("image/png");
+    link.click();
+}
+// ===========================================
+// CIERRE AUTOMÁTICO SEGÚN FECHA DEL ENCABEZADO
+// ===========================================
+
+function cerrarProdeSiCorresponde() {
+
+    const cartel = document.getElementById("fechaPartido");
+
+    if (!cartel) return;
+
+    const texto = cartel.innerText;
+
+    // Busca 22/06 y 14:00
+    const m = texto.match(/(\d{2})\/(\d{2}).*?(\d{2}):(\d{2})/);
+
+    if (!m) return;
+
+    const dia = parseInt(m[1]);
+    const mes = parseInt(m[2]) - 1;
+    const hora = parseInt(m[3]);
+    const minuto = parseInt(m[4]);
+
+    // Toma el año actual
+    const anio = new Date().getFullYear();
+
+    const inicio = new Date(anio, mes, dia, hora, minuto);
+
+    if (new Date() >= inicio) {
+
+        const boton = document.querySelector("button[onclick='generarTodo()']");
+
+        boton.disabled = true;
+        boton.innerHTML = "⛔ PRODE CERRADO";
+        boton.style.background = "#888";
+        boton.style.cursor = "not-allowed";
+        boton.style.opacity = ".7";
+
+        document.getElementById("patente").disabled = true;
+        document.getElementById("arg").disabled = true;
+        document.getElementById("rival").disabled = true;
+
+        if (!document.getElementById("cartelCerrado")) {
+
+            const aviso = document.createElement("div");
+
+            aviso.id = "cartelCerrado";
+
+            aviso.innerHTML = "⛔ ESTE PRODE YA SE ENCUENTRA CERRADO";
+
+            aviso.style.background = "#c62828";
+            aviso.style.color = "white";
+            aviso.style.fontWeight = "bold";
+            aviso.style.padding = "15px";
+            aviso.style.margin = "20px";
+            aviso.style.borderRadius = "15px";
+            aviso.style.fontSize = "22px";
+
+            document
+                .getElementById("pantalla-principal")
+                .prepend(aviso);
+        }
+    }
+}
+
+cerrarProdeSiCorresponde();
+
+// vuelve a verificar cada minuto
+setInterval(cerrarProdeSiCorresponde,60000);
+</script>
+</body>
+</html>
