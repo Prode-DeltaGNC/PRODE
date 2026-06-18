@@ -73,18 +73,12 @@ function generarTodo(){
         alert("Por favor, completá todos los campos.");
         return;
     }
-    // --- INICIO DE RESTRICCIÓN DE 2 HORAS ---
-    const ahora = new Date().getTime();
+    // --- INICIO DE RESTRICCIÓN: 1 VEZ POR PATENTE ---
     const registros = JSON.parse(localStorage.getItem('prode_registros') || '{}');
     
     if (registros[patente]) {
-        const ultimaVez = registros[patente];
-        const dosHoras = 2 * 60 * 60 * 1000; // 2 horas en milisegundos
-        
-        if (ahora - ultimaVez < dosHoras) {
-            alert("⛔ Ya participaste con esta patente hace poco. Debes esperar 2 horas para volver a jugar.");
-            return; // Detiene la ejecución aquí
-        }
+        alert("⛔ Esta patente ya ha participado anteriormente. Solo se permite una participación por vehículo.");
+        return; // Detiene la ejecución aquí
     }
     // --- FIN DE RESTRICCIÓN ---
     
