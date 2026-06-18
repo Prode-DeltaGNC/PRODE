@@ -85,7 +85,7 @@ function generarTodo(){
     
     // 1. Preparar textos
     const datosQR = `PRODE DELTA GNC | Argentina vs Austria | Patente: ${patente} | Pronostico: ${arg}-${rival} | ${fecha}`;
-    const mensajeWp = `🇦🇷 *PRODE DELTA GNC*\n\n⚽ Partido: ARGENTINA VS AUSTRIA\n🚗 Patente: ${patente}\n📊 Pronostico: ${arg}-${rival}\n📅 Fecha: ${fecha}\n🎁 ¡Participá por una carga gratis!`;
+    const mensajeWp = `🇦🇷 *PRODE DELTA GNC*\n\n⚽ Partido: ARGENTINA VS AUSTRIA\n🚗 Patente: ${patente}\n📊 Pronostico: ${arg}-${rival}\n📅 Fecha: ${fecha}\n🎁 ¡Participá por 50%OFF en tu carga!`;
     
     // 2. Mostrar Pantalla QR
     document.getElementById("pantalla-principal").classList.add("hidden");
@@ -165,9 +165,7 @@ function mostrarBotonGuardar(datosQR) {
 
     btn.onclick = () => guardarCupon(datosQR);
 }
-
 function guardarCupon(datosQR){
-
     const qr = document.querySelector("canvas");
 
     if(!qr){
@@ -177,18 +175,18 @@ function guardarCupon(datosQR){
 
     const canvas=document.createElement("canvas");
     canvas.width=900;
-    canvas.height=1750;
+    canvas.height=1850; // Aumenté un poco el alto para que entre el texto nuevo
 
     const ctx=canvas.getContext("2d");
 
     // Fondo
     ctx.fillStyle="#f8f8f8";
-    ctx.fillRect(0,0,900,1500);
+    ctx.fillRect(0,0,900,1850);
 
     // Marco
     ctx.strokeStyle="#006633";
     ctx.lineWidth=8;
-    ctx.strokeRect(20,20,860,1460);
+    ctx.strokeRect(20,20,860,1810);
 
     // Encabezado
     ctx.fillStyle="#006633";
@@ -204,52 +202,39 @@ function guardarCupon(datosQR){
     ctx.fillStyle="#000";
     ctx.textAlign="center";
     ctx.font="bold 35px Arial";
-    ctx.fillText(datosQR.partido, 450, 200); // Título del partido
+    ctx.fillText(datosQR.partido, 450, 200);
     ctx.font="28px Arial";
-    ctx.fillText(datosQR.fechaPartido, 450, 240); // Fecha y hora
+    ctx.fillText(datosQR.fechaPartido, 450, 240);
     
-    // Línea divisoria extra para separar el título del resto
     ctx.strokeStyle="#cccccc";
     ctx.lineWidth=2;
     ctx.beginPath();
     ctx.moveTo(50,260);
     ctx.lineTo(850,260);
     ctx.stroke();
-    // -------------------------------
 
-    // Fecha
     const fecha=new Date().toLocaleDateString("es-AR");
 
     // Datos
     let y=300;
-
     ctx.fillStyle="#000";
     ctx.textAlign="left";
-
     ctx.font="bold 34px Arial";
     ctx.fillText("PATENTE",70,y);
-
     ctx.font="32px Arial";
     ctx.fillText(datosQR.patente,320,y);
-
     y+=70;
-
     ctx.font="bold 34px Arial";
     ctx.fillText("PRONÓSTICO",70,y);
-
     ctx.font="32px Arial";
     ctx.fillText(datosQR.pronostico,320,y);
-
     y+=70;
-
     ctx.font="bold 34px Arial";
     ctx.fillText("FECHA",70,y);
-
     ctx.font="32px Arial";
     ctx.fillText(fecha,320,y);
 
-    y+=110;
-
+    y+=100;
     // Línea
     ctx.strokeStyle="#cccccc";
     ctx.lineWidth=2;
@@ -257,70 +242,58 @@ function guardarCupon(datosQR){
     ctx.moveTo(50,y);
     ctx.lineTo(850,y);
     ctx.stroke();
-
-    y+=80;
+    y+=60;
 
     // Premio
     ctx.fillStyle="#006633";
     ctx.font="bold 40px Arial";
     ctx.textAlign="center";
     ctx.fillText("🎁 PREMIO",450,y);
-
-    y+=60;
-
+    y+=50;
     ctx.fillStyle="#000";
     ctx.font="30px Arial";
-    ctx.fillText("Si acertás el resultado oficial",450,y);
-
+    ctx.fillText("Si acertás el resultado oficial,",450,y);
+    y+=40;
+    ctx.fillText("podrás canjear tu premio a partir del",450,y);
     y+=45;
+    ctx.font="bold 32px Arial";
+    ctx.fillStyle="#c62828"; // Color rojo para resaltar fecha
+    ctx.fillText("MARTES 23/06 A LAS 06:00 HS",450,y);
 
-    ctx.fillText("podrás canjear tu premio",450,y);
-
-    y+=45;
-
-    ctx.fillText("presentando este cupón.",450,y);
-
-    y+=100;
-
-    // QR grande
+    y+=80;
+    // QR
     ctx.drawImage(qr,210,y,480,480);
-    y+=560;
+    y+=530;
 
     ctx.fillStyle="#006633";
     ctx.font="bold 30px Arial";
-    ctx.textAlign="center"; // Asegúrate de que esté centrado
+    ctx.textAlign="center";
     ctx.fillText("Presentá este QR en DELTA GNC",450,y);
-
     y+=45;
     ctx.fillStyle="#666";
     ctx.font="24px Arial";
-    ctx.fillText("Conservalo hasta conocer el resultado del partido.",450,y);
+    ctx.fillText("Conservalo hasta conocer el resultado.",450,y);
 
-    y+=70;
-
-    // Línea punteada
+    y+=60;
     ctx.strokeStyle="#999";
     ctx.setLineDash([12,10]);
-
     ctx.beginPath();
     ctx.moveTo(50,y);
     ctx.lineTo(850,y);
     ctx.stroke();
-
     ctx.setLineDash([]);
 
     y+=70;
-
     ctx.fillStyle="#006633";
     ctx.font="bold 26px Arial";
     ctx.fillText("¡Gracias por participar!",450,y);
 
-    // Descargar
     const link=document.createElement("a");
     link.download="Cupon_DELTA_GNC.png";
     link.href=canvas.toDataURL("image/png");
     link.click();
 }
+
 // ===========================================
 // CIERRE AUTOMÁTICO SEGÚN FECHA DEL ENCABEZADO
 // ===========================================
