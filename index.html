@@ -73,16 +73,17 @@ function generarTodo(){
         alert("Por favor, completá todos los campos.");
         return;
     }
-    // --- INICIO DE RESTRICCIÓN: 1 VEZ POR PATENTE ---
+
+    // --- NUEVA LÓGICA: 1 VEZ POR PATENTE ---
     const registros = JSON.parse(localStorage.getItem('prode_registros') || '{}');
     
     if (registros[patente]) {
         alert("⛔ Esta patente ya ha participado anteriormente. Solo se permite una participación por vehículo.");
-        return; // Detiene la ejecución aquí
+        return; 
     }
-    // --- FIN DE RESTRICCIÓN ---
+    // ---------------------------------------
     
-    // 1. Preparar textos (sin acentos para que el QR no de error)
+    // 1. Preparar textos
     const datosQR = `PRODE DELTA GNC | Argentina vs Austria | Patente: ${patente} | Pronostico: ${arg}-${rival} | ${fecha}`;
     const mensajeWp = `🇦🇷 *PRODE DELTA GNC*\n\n⚽ Partido: ARGENTINA VS AUSTRIA\n🚗 Patente: ${patente}\n📊 Pronostico: ${arg}-${rival}\n📅 Fecha: ${fecha}\n🎁 ¡Participá por una carga gratis!`;
     
@@ -98,19 +99,20 @@ function generarTodo(){
         width: 200,
         height: 200
     });
-   // 4. Guardar registro exitoso (Aquí registramos el tiempo)
-    registros[patente] = ahora;
+
+    // 4. Guardar registro exitoso (Marcamos simplemente como true)
+    registros[patente] = true; 
     localStorage.setItem('prode_registros', JSON.stringify(registros));
     
     // 5. Abrir WhatsApp
     window.open(`https://wa.me/${tuNumero}?text=${encodeURIComponent(mensajeWp)}`, "_blank");
-mostrarBotonGuardar({
-    patente: patente,
-    pronostico: `${arg}-${rival}`,
-    partido: "ARGENTINA VS AUSTRIA", // Puedes dejarlo fijo o tomarlo de otro elemento
-    fechaPartido: document.getElementById("fechaPartido").innerText.replace("📅", "").replace("⏰", "").trim()
-});
-
+    
+    mostrarBotonGuardar({
+        patente: patente,
+        pronostico: `${arg}-${rival}`,
+        partido: "ARGENTINA VS AUSTRIA",
+        fechaPartido: document.getElementById("fechaPartido").innerText.replace("📅", "").replace("⏰", "").trim()
+    });
 }
 // ===============================
 // GUARDAR CUPÓN DELTA GNC
@@ -323,70 +325,52 @@ function guardarCupon(datosQR){
 // CIERRE AUTOMÁTICO SEGÚN FECHA DEL ENCABEZADO
 // ===========================================
 
-function cerrarProdeSiCorresponde() {
+function verificarHabilitacion() {
+    const ahora = new Date();
+    // Definimos el rango: 19/06/2026 06:00 a 20/06/2026 06:00
+    // Recordatorio: en JavaScript, los meses van de 0 a 11 (Junio es 5)
+    const inicio = new Date(2026, 5, 19, 6, 0, 0); 
+    const fin = new Date(2026, 5, 20, 6, 0, 0);
 
-    const cartel = document.getElementById("fechaPartido");
+    const boton = document.querySelector("button[onclick='generarTodo()']");
+    const patenteInput = document.getElementById("patente");
+    const argInput = document.getElementById("arg");
+    const rivalInput = document.getElementById("rival");
 
-    if (!cartel) return;
+    const estaHabilitado = (ahora >= inicio && ahora < fin);
 
-    const texto = cartel.innerText;
-
-    // Busca 22/06 y 14:00
-    const m = texto.match(/(\d{2})\/(\d{2}).*?(\d{2}):(\d{2})/);
-
-    if (!m) return;
-
-    const dia = parseInt(m[1]);
-    const mes = parseInt(m[2]) - 1;
-    const hora = parseInt(m[3]);
-    const minuto = parseInt(m[4]);
-
-    // Toma el año actual
-    const anio = new Date().getFullYear();
-
-    const inicio = new Date(anio, mes, dia, hora, minuto);
-
-    if (new Date() >= inicio) {
-
-        const boton = document.querySelector("button[onclick='generarTodo()']");
-
+    if (!estaHabilitado) {
+        // Bloquear todo
         boton.disabled = true;
         boton.innerHTML = "⛔ PRODE CERRADO";
         boton.style.background = "#888";
         boton.style.cursor = "not-allowed";
-        boton.style.opacity = ".7";
-
-        document.getElementById("patente").disabled = true;
-        document.getElementById("arg").disabled = true;
-        document.getElementById("rival").disabled = true;
+        
+        patenteInput.disabled = true;
+        argInput.disabled = true;
+        rivalInput.disabled = true;
 
         if (!document.getElementById("cartelCerrado")) {
-
             const aviso = document.createElement("div");
-
             aviso.id = "cartelCerrado";
-
-            aviso.innerHTML = "⛔ ESTE PRODE YA SE ENCUENTRA CERRADO";
-
-            aviso.style.background = "#c62828";
-            aviso.style.color = "white";
-            aviso.style.fontWeight = "bold";
-            aviso.style.padding = "15px";
-            aviso.style.margin = "20px";
-            aviso.style.borderRadius = "15px";
-            aviso.style.fontSize = "22px";
-
-            document
-                .getElementById("pantalla-principal")
-                .prepend(aviso);
+            aviso.innerHTML = "⛔ EL PRODE ESTÁ HABILITADO SOLO DESDE EL 19/06 A LAS 06:00 HS HASTA EL 20/06 A LAS 06:00 HS";
+            aviso.style.cssText = "background: #c62828; color: white; font-weight: bold; padding: 15px; margin: 20px 0; border-radius: 15px; font-size: 16px;";
+            document.getElementById("pantalla-principal").prepend(aviso);
         }
+    } else {
+        // Asegurar que esté habilitado si estamos en rango
+        boton.disabled = false;
+        boton.innerHTML = "📲 ENVIAR Y GENERAR QR";
+        boton.style.background = "#16a34a";
+        patenteInput.disabled = false;
+        argInput.disabled = false;
+        rivalInput.disabled = false;
     }
 }
 
-cerrarProdeSiCorresponde();
-
-// vuelve a verificar cada minuto
-setInterval(cerrarProdeSiCorresponde,60000);
+// Ejecutar al cargar y verificar cada 30 segundos
+verificarHabilitacion();
+setInterval(verificarHabilitacion, 30000);
 </script>
 </body>
 </html>
