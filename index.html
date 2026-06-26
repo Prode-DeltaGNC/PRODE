@@ -98,12 +98,19 @@ window.onload = verificarHabilitacion;
         if(!patente || arg === "" || rival === ""){ alert("Completá todos los campos."); return; }
         if (!validarPatente(patente)) { alert("⛔ Formato de patente inválido."); return; }
 
-        const registros = JSON.parse(localStorage.getItem('prode_registros') || '{}');
-        if (registros[patente]) { alert("⛔ Esta patente ya participó."); return; }
+       // 1. Obtener registros (usando 0 si no existe)
+const registros = JSON.parse(localStorage.getItem('prode_registros') || '{}');
+const intentos = registros[patente] || 0;
 
-        // Registrar
-        registros[patente] = true; 
-        localStorage.setItem('prode_registros', JSON.stringify(registros));
+// 2. Validar límite de 2
+if (intentos >= 2) {
+    alert("⛔ Esta patente ya alcanzó el límite de 2 participaciones.");
+    return;
+}
+
+// 3. Registrar o incrementar
+registros[patente] = intentos + 1;
+localStorage.setItem('prode_registros', JSON.stringify(registros));
 
         // Preparar UI
         document.getElementById("pantalla-principal").classList.add("hidden");
