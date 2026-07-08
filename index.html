@@ -20,20 +20,24 @@
     <h1 class="text-6xl font-black italic text-yellow-300 glow">DELTA GNC</h1>
     <h2 class="text-3xl font-black text-white mt-2">PRODE ARGENTINA 2026</h2>
     <div id="info-fechas" class="text-white text-sm font-bold opacity-80 mb-1">
-    Habilitado desde el 02/07 06:00 hs hasta el 03/07 06:00 hs
+    Habilitado desde el 09/07 06:00 hs hasta el 11/07 18:00 hs
 </div>
 <div id="contador" class="text-white font-black text-xl my-4 bg-red-600/50 p-2 rounded-lg">
     Cargando tiempo...
 </div>
     <div class="flex justify-center items-center gap-8 my-8">
-        <div class="text-center"><div class="text-[70px]">🇦🇷</div><div class="text-white font-black text-xl">ARGENTINA</div></div>
-        <div class="text-white text-4xl font-black">VS</div>
-        <div class="text-center"><div class="text-[70px]">🇨🇻</div><div class="text-white font-black text-xl">CABO VERDE</div></div>
-    </div>
+
+<div class="text-center"><div class="text-[70px]">🇦🇷</div><div class="text-white font-black text-xl">ARGENTINA</div></div>
+
+<div class="text-white text-4xl font-black">VS</div>
+
+<div class="text-center"><div class="text-[70px]">🇨🇭</div><div class="text-white font-black text-xl">SUIZA</div></div>
+
+</div>
 
     <div class="space-y-3 mb-8">
         <div id="fechaPartido" class="inline-block bg-black/40 text-white rounded-full px-6 py-2 text-lg font-black">
-            📅 VIERNES 03/07 | ⏰ 19:00 HS
+            📅 SABADO 11/07 | ⏰ 23:00 HS
         </div>
         <div class="text-yellow-300 font-black text-lg italic uppercase">PARTICIPA POR UN 50% DESCUENTO EN TU CARGA DE GNC</div>
     </div>
@@ -42,17 +46,17 @@
         <div class="text-center text-lg font-black text-sky-900 mb-1">PATENTE</div>
         <input id="patente" maxlength="7" class="w-full text-center uppercase text-5xl font-black outline-none" placeholder="ABC123">
     </div>
-
-    <div class="grid grid-cols-2 gap-5 mb-8">
+<div class="grid grid-cols-2 gap-5 mb-8">
         <div class="bg-sky-100 rounded-3xl p-4 border-4 border-sky-400">
             <div class="text-center font-black text-sky-900">ARGENTINA</div>
-            <input id="arg" type="number" inputmode="numeric" class="w-full text-center text-6xl font-black bg-transparent outline-none">
+            <input id="arg" type="number" class="w-full text-center text-6xl font-black bg-transparent outline-none">
         </div>
         <div class="bg-yellow-300 rounded-3xl p-4 border-4 border-yellow-500">
-            <div class="text-center font-black text-yellow-900">CABO VERDE</div>
-            <input id="rival" type="number" inputmode="numeric" class="w-full text-center text-6xl font-black bg-transparent outline-none">
+            <div class="text-center font-black text-yellow-900">SUIZA</div>
+            <input id="rival" type="number" class="w-full text-center text-6xl font-black bg-transparent outline-none">
         </div>
     </div>
+    
 
     <button onclick="generarTodo()" class="w-full bg-green-600 active:scale-95 transition text-white text-3xl font-black rounded-3xl py-6 shadow-xl">
         📲 ENVIAR Y GENERAR QR
@@ -66,7 +70,7 @@
 </div>
 
 <script>
-    const KEY_REGISTROS = 'prode_2026_cabo_verde';
+    const KEY_REGISTROS = 'prode_2026_julio_11';
 
     function validarPatente(patente) {
         return /^[A-Z]{3}\d{3}$/.test(patente) || /^[A-Z]{2}\d{3}[A-Z]{2}$/.test(patente);
@@ -75,10 +79,10 @@
     function verificarHabilitacion() {
     const ahora = new Date();
     // Los meses en JS van de 0 a 11 (5 es junio, 6 es julio)
-    // Inicio: 2 de julio de 2026, 06:00
-    const inicio = new Date(2026, 6, 2, 6, 0, 0); 
-    // Fin: 3 de julio de 2026, 06:00
-    const fin = new Date(2026, 6, 3, 6, 0, 0);
+    // Inicio: 9 de julio de 2026, 06:00
+    const inicio = new Date(2026, 6, 9, 6, 0, 0); 
+    // Fin: 11 de julio de 2026, 18:00
+    const fin = new Date(2026, 6, 11, 18, 0, 0);
     
     const boton = document.querySelector("button[onclick='generarTodo()']");
     const inputs = document.querySelectorAll("input");
@@ -99,14 +103,14 @@
 
     window.onload = verificarHabilitacion;
 function iniciarContador() {
-    const inicio = new Date(2026, 6, 2, 6, 0, 0).getTime();
-    const fin = new Date(2026, 6, 3, 6, 0, 0).getTime();
+    const inicio = new Date(2026, 6, 9, 6, 0, 0).getTime();
+    const fin = new Date(2026, 6, 11, 18, 0, 0).getTime();
     
     const divContador = document.getElementById("contador");
     const infoFechas = document.getElementById("info-fechas");
 
     // Texto informativo fijo
-    infoFechas.innerHTML = "Habilitado desde el 02/07 06:00 hs hasta el 03/07 06:00 hs";
+    infoFechas.innerHTML = "Habilitado desde el 09/07 06:00 hs hasta el 11/07 18:00 hs";
 
     const x = setInterval(function() {
         const ahora = new Date().getTime();
@@ -180,7 +184,7 @@ window.onload = function() {
         const contenedor = document.getElementById("contenedor-botones");
         // Aseguramos que el botón de WhatsApp no sea reemplazado por nada, sino que aparezca tras la descarga
         const btnWp = document.createElement("a");
-        const mensaje = encodeURIComponent(`🇦🇷 *PRODE DELTA GNC*\n\n⚽ Partido: ARGENTINA VS CABO VERDE\n🚗 Patente: ${patente}\n📊 Pronostico: ${pronostico}\n🎁 ¡Participá por 50%OFF!`);
+        const mensaje = encodeURIComponent(`🇦🇷 *PRODE DELTA GNC*\n\n⚽ Partido: ARGENTINA VS SUIZA\n🚗 Patente: ${patente}\n📊 Pronostico: ${pronostico}\n🎁 ¡Participá por 50%OFF!`);
         btnWp.href = `https://wa.me/5491127098175?text=${mensaje}`;
         btnWp.target = "_blank";
         btnWp.innerText = "📲 2. ENVIAR POR WHATSAPP";
@@ -217,8 +221,8 @@ window.onload = function() {
         ctx.fillStyle = "white"; ctx.textAlign = "center"; ctx.font = "bold 80px Arial"; ctx.fillText("DELTA GNC", 450, 125);
         ctx.font = "bold 35px Arial"; ctx.fillText("CUPÓN DE PARTICIPACIÓN - PRODE", 450, 175);
         
-        ctx.fillStyle = "#333"; ctx.font = "bold 50px Arial"; ctx.fillText("ARGENTINA vs CABO VERDE", 450, 280);
-        ctx.fillStyle = "#666"; ctx.font = "35px Arial"; ctx.fillText("VIERNES 03/07 | ⏰ 19:00 HS", 450, 335);
+        ctx.fillStyle = "#333"; ctx.font = "bold 50px Arial"; ctx.fillText("ARGENTINA vs SUIZA", 450, 280);
+        ctx.fillStyle = "#666"; ctx.font = "35px Arial"; ctx.fillText("SABADO 11/07 | ⏰ 23:00 HS", 450, 335);
 
         ctx.strokeStyle = "#ddd"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(100, 380); ctx.lineTo(800, 380); ctx.stroke();
         
