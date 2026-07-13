@@ -20,18 +20,15 @@
     <h1 class="text-6xl font-black italic text-yellow-300 glow">DELTA GNC</h1>
     <h2 class="text-3xl font-black text-white mt-2">PRODE ARGENTINA 2026</h2>
     <div id="info-fechas" class="text-white text-sm font-bold opacity-80 mb-1">
-    Habilitado desde el 14/07 06:00 hs hasta el 15/07 10:00 hs
-</div>
-<div id="contador" class="text-white font-black text-xl my-4 bg-red-600/50 p-2 rounded-lg">
-    Cargando tiempo...
-</div>
+        Habilitado desde el 14/07 06:00 hs hasta el 15/07 10:00 hs
+    </div>
+    <div id="contador" class="text-white font-black text-xl my-4 bg-red-600/50 p-2 rounded-lg">
+        Cargando tiempo...
+    </div>
     <div class="flex justify-center items-center gap-8 my-8">
-
-<div class="text-center"><div class="text-[70px]">🇦🇷</div><div class="text-white font-black text-xl">ARGENTINA</div></div>
-
-<div class="text-white text-4xl font-black">VS</div>
-
-<div class="text-center"><div class="text-[70px]">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div><div class="text-white font-black text-xl">INGLATERRA</div></div>
+        <div class="text-center"><div class="text-[70px]">🇦🇷</div><div class="text-white font-black text-xl">ARGENTINA</div></div>
+        <div class="text-white text-4xl font-black">VS</div>
+        <div class="text-center"><div class="text-[70px]">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div><div class="text-white font-black text-xl">INGLATERRA</div></div>
     </div>
 
     <div class="space-y-3 mb-8">
@@ -45,17 +42,16 @@
         <div class="text-center text-lg font-black text-sky-900 mb-1">PATENTE</div>
         <input id="patente" maxlength="7" class="w-full text-center uppercase text-5xl font-black outline-none" placeholder="ABC123">
     </div>
-<div class="grid grid-cols-2 gap-5 mb-8">
+    <div class="grid grid-cols-2 gap-5 mb-8">
         <div class="bg-sky-100 rounded-3xl p-4 border-4 border-sky-400">
             <div class="text-center font-black text-sky-900">ARGENTINA</div>
             <input id="arg" type="number" class="w-full text-center text-6xl font-black bg-transparent outline-none">
         </div>
-  <div class="bg-yellow-300 rounded-3xl p-4 border-4 border-yellow-500">
+        <div class="bg-yellow-300 rounded-3xl p-4 border-4 border-yellow-500">
             <div class="text-center font-black text-yellow-900">INGLATERRA</div>
             <input id="rival" type="number" class="w-full text-center text-6xl font-black bg-transparent outline-none">
         </div>
-    </div>      
-    
+    </div>
 
     <button onclick="generarTodo()" class="w-full bg-green-600 active:scale-95 transition text-white text-3xl font-black rounded-3xl py-6 shadow-xl">
         📲 ENVIAR Y GENERAR QR
@@ -76,79 +72,64 @@
     }
 
     function verificarHabilitacion() {
-    const ahora = new Date();
-    // Los meses en JS van de 0 a 11 (5 es junio, 6 es julio)
-    // Inicio: 14 de julio de 2026, 06:00
-    const inicio = new Date(2026, 6, 14, 6, 0, 0); 
-    // Fin: 15 de julio de 2026, 10:00
-    const fin = new Date(2026, 6, 15, 10, 0, 0);
-    
-    const boton = document.querySelector("button[onclick='generarTodo()']");
-    const inputs = document.querySelectorAll("input");
-
-    if (ahora < inicio || ahora >= fin) {
-        boton.disabled = true;
-        boton.innerHTML = "⛔ PRODE CERRADO";
-        boton.style.background = "#888";
-        inputs.forEach(input => input.disabled = true);
-    } else {
-        // Aseguramos que se habilite si está en hora
-        boton.disabled = false;
-        boton.innerHTML = "📲 ENVIAR Y GENERAR QR";
-        boton.style.background = "#16a34a"; // Color verde original
-        inputs.forEach(input => input.disabled = false);
-    }
-}
-
-    window.onload = verificarHabilitacion;
-function iniciarContador() {
-    const inicio = new Date(2026, 6, 14, 6, 0, 0).getTime();
-    const fin = new Date(2026, 6, 15, 10, 0, 0).getTime();
-    
-    const divContador = document.getElementById("contador");
-    const infoFechas = document.getElementById("info-fechas");
-
-    // Texto informativo fijo
-    infoFechas.innerHTML = "Habilitado desde el 14/07 06:00 hs hasta el 15/07 10:00 hs";
-
-    const x = setInterval(function() {
-        const ahora = new Date().getTime();
-        let distancia;
-        let texto = "";
-        let colorFondo = "";
-
-        if (ahora < inicio) {
-            distancia = inicio - ahora;
-            texto = "⏳ FALTA PARA JUGAR: ";
-            colorFondo = "bg-sky-600/50";
-        } else if (ahora >= inicio && ahora < fin) {
-            distancia = fin - ahora;
-            texto = "⏳ CIERRA EN: ";
-            colorFondo = "bg-red-600/80";
-        } else {
-            clearInterval(x);
-            divContador.innerHTML = "⛔ PRODE CERRADO";
-            divContador.className = "text-white font-black text-xl my-4 bg-gray-600/50 p-2 rounded-lg";
-            verificarHabilitacion();
-            return;
-        }
-
-        const horas = Math.floor(distancia / (1000 * 60 * 60));
-        const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-        const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
-
-        divContador.innerHTML = `${texto} ${horas}h ${minutos}m ${segundos}s`;
-        divContador.className = `text-white font-black text-xl my-4 ${colorFondo} p-2 rounded-lg`;
+        const ahora = new Date();
+        const inicio = new Date(2026, 6, 13, 6, 0, 0);
+        const fin = new Date(2026, 6, 15, 10, 0, 0);
         
-        verificarHabilitacion();
-    }, 1000);
-}
+        const boton = document.querySelector("button[onclick='generarTodo()']");
+        const inputs = document.querySelectorAll("input");
 
-// Actualiza tu window.onload para incluir esta función
-window.onload = function() {
-    verificarHabilitacion();
-    iniciarContador();
-};
+        if (ahora < inicio || ahora >= fin) {
+            boton.disabled = true;
+            boton.innerHTML = "⛔ PRODE CERRADO";
+            boton.style.background = "#888";
+            inputs.forEach(input => input.disabled = true);
+        } else {
+            boton.disabled = false;
+            boton.innerHTML = "📲 ENVIAR Y GENERAR QR";
+            boton.style.background = "#16a34a";
+            inputs.forEach(input => input.disabled = false);
+        }
+    }
+
+    function iniciarContador() {
+        const inicio = new Date(2026, 6, 14, 6, 0, 0).getTime();
+        const fin = new Date(2026, 6, 15, 10, 0, 0).getTime();
+        const divContador = document.getElementById("contador");
+        const x = setInterval(function() {
+            const ahora = new Date().getTime();
+            let distancia, texto, colorFondo;
+
+            if (ahora < inicio) {
+                distancia = inicio - ahora;
+                texto = "⏳ FALTA PARA JUGAR: ";
+                colorFondo = "bg-sky-600/50";
+            } else if (ahora >= inicio && ahora < fin) {
+                distancia = fin - ahora;
+                texto = "⏳ CIERRA EN: ";
+                colorFondo = "bg-red-600/80";
+            } else {
+                clearInterval(x);
+                divContador.innerHTML = "⛔ PRODE CERRADO";
+                divContador.className = "text-white font-black text-xl my-4 bg-gray-600/50 p-2 rounded-lg";
+                verificarHabilitacion();
+                return;
+            }
+
+            const horas = Math.floor(distancia / (1000 * 60 * 60));
+            const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+            divContador.innerHTML = `${texto} ${horas}h ${minutos}m ${segundos}s`;
+            divContador.className = `text-white font-black text-xl my-4 ${colorFondo} p-2 rounded-lg`;
+            verificarHabilitacion();
+        }, 1000);
+    }
+
+    window.onload = function() {
+        verificarHabilitacion();
+        iniciarContador();
+    };
+
     function generarTodo() {
         const patente = document.getElementById("patente").value.trim().toUpperCase();
         const arg = document.getElementById("arg").value;
@@ -160,7 +141,7 @@ window.onload = function() {
         const registros = JSON.parse(localStorage.getItem(KEY_REGISTROS) || '{}');
         if (registros[patente]) { alert("⛔ Esta patente ya participó."); return; }
 
-        registros[patente] = true; 
+        registros[patente] = true;
         localStorage.setItem(KEY_REGISTROS, JSON.stringify(registros));
 
         document.getElementById("pantalla-principal").classList.add("hidden");
@@ -181,14 +162,12 @@ window.onload = function() {
 
     function mostrarBotonWp(patente, pronostico) {
         const contenedor = document.getElementById("contenedor-botones");
-        // Aseguramos que el botón de WhatsApp no sea reemplazado por nada, sino que aparezca tras la descarga
         const btnWp = document.createElement("a");
         const mensaje = encodeURIComponent(`🇦🇷 *PRODE DELTA GNC*\n\n⚽ Partido: ARGENTINA VS INGLATERRA\n🚗 Patente: ${patente}\n📊 Pronostico: ${pronostico}\n🎁 ¡Participá por 50%OFF!`);
         btnWp.href = `https://wa.me/5491127098175?text=${mensaje}`;
         btnWp.target = "_blank";
         btnWp.innerText = "📲 2. ENVIAR POR WHATSAPP";
         btnWp.className = "block w-full bg-green-600 text-white font-black py-4 rounded-3xl text-xl mt-4";
-        btnWp.onclick = () => { alert("✅ ¡Gracias por participar! No olvides guardar tu cupón."); };
         contenedor.appendChild(btnWp);
     }
 
@@ -219,28 +198,21 @@ window.onload = function() {
         ctx.fillStyle = "#0a6b38"; ctx.fillRect(30, 30, 840, 180);
         ctx.fillStyle = "white"; ctx.textAlign = "center"; ctx.font = "bold 80px Arial"; ctx.fillText("DELTA GNC", 450, 125);
         ctx.font = "bold 35px Arial"; ctx.fillText("CUPÓN DE PARTICIPACIÓN - PRODE", 450, 175);
-        
         ctx.fillStyle = "#333"; ctx.font = "bold 50px Arial"; ctx.fillText("ARGENTINA vs INGLATERRA", 450, 280);
         ctx.fillStyle = "#666"; ctx.font = "35px Arial"; ctx.fillText("MIERCOLES 15/07 | ⏰ 16:00 HS", 450, 335);
-
         ctx.strokeStyle = "#ddd"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(100, 380); ctx.lineTo(800, 380); ctx.stroke();
-        
         ctx.textAlign = "left"; ctx.fillStyle = "#000"; ctx.font = "bold 40px Arial"; 
         ctx.fillText("TU PATENTE:", 100, 460); ctx.fillStyle = "#0b3d91"; ctx.font = "bold 50px Courier New"; ctx.fillText(patente, 420, 460);
         ctx.fillStyle = "#000"; ctx.font = "bold 40px Arial"; ctx.fillText("TU PRONÓSTICO:", 100, 530);
         ctx.fillStyle = "#c62828"; ctx.font = "bold 60px Arial"; ctx.fillText(pronostico, 420, 535);
-
         ctx.fillStyle = "#666"; ctx.font = "30px Arial"; ctx.fillText("Emitido: " + new Date().toLocaleDateString(), 100, 600);
-
         ctx.fillStyle = "#f4f4f4"; ctx.fillRect(80, 650, 740, 250);
         ctx.strokeStyle = "#ffd700"; ctx.lineWidth = 5; ctx.strokeRect(80, 650, 740, 250);
         ctx.textAlign = "center"; ctx.fillStyle = "#c62828"; ctx.font = "bold 50px Arial"; ctx.fillText("🎁 ¡PREMIO!", 450, 720);
         ctx.fillStyle = "#333"; ctx.font = "bold 32px Arial"; wrapText(ctx, "Si acertás el resultado, ganás 50% OFF en tu próxima carga de GNC.", 450, 780, 700, 40);
-
         ctx.fillStyle = "#000"; ctx.font = "bold 35px Arial"; ctx.fillText("ESCANEAR EN PLAYA", 450, 980);
         const qrCanvas = document.querySelector("#qrcode canvas");
         if (qrCanvas) ctx.drawImage(qrCanvas, 225, 1020, 450, 450);
-        
         ctx.strokeStyle = "#aaa"; ctx.setLineDash([15, 10]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(50, 1530); ctx.lineTo(850, 1530); ctx.stroke(); ctx.setLineDash([]);
         ctx.fillStyle = "#666"; ctx.font = "bold 28px Arial"; ctx.fillText("TÉRMINOS Y CONDICIONES", 450, 1580);
         const textosLegales = [
@@ -252,7 +224,6 @@ window.onload = function() {
         ];
         let yLegales = 1630;
         textosLegales.forEach(t => { yLegales = wrapText(ctx, t, 450, yLegales, 750, 35) + 15; });
-        
         const link = document.createElement("a"); 
         link.download = `Cupon_Prode_DELTA_${patente}.png`;
         link.href = canvas.toDataURL("image/png"); 
